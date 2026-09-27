@@ -96,54 +96,6 @@ export default function Home() {
   }
 }
 
-    if (password.length < 8) {
-      setMessage("Your password must be at least 8 characters.");
-      setLoading(false);
-      return;
-    }
-
-    if (isSignUp) {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
-
-      if (error) {
-        setMessage(error.message);
-        setLoading(false);
-        return;
-      }
-
-      if (data.session) {
-        router.push("/dashboard");
-        return;
-      }
-
-      setMessage(
-        "Account created! Check your email to confirm your account, then come back and sign in."
-      );
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        setMessage(error.message);
-        setLoading(false);
-        return;
-      }
-
-      router.push("/dashboard");
-      return;
-    }
-
-    setLoading(false);
-  }
-
   function closeLogin() {
     setShowLogin(false);
     setMessage("");

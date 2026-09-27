@@ -16,16 +16,85 @@ export default function Home() {
   const [message, setMessage] = useState("");
 
   async function handleAuth(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  event.preventDefault();
 
-    setLoading(true);
-    setMessage("");
+  setLoading(true);
+  setMessage("");
 
-    if (!email || !password) {
-      setMessage("Please enter your email and password.");
-      setLoading(false);
+  if (!email || !password) {
+    setMessage("Please enter your email and password.");
+    setLoading(false);
+    return;
+  }
+
+  if (password.length < 8) {
+    setMessage("Your password must be at least 8 characters.");
+    setLoading(false);
+    return;
+  }
+
+  try {
+    if (isSignUp) {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+
+      if (error) {
+        setMessage(error.message);
+        return;
+      }
+
+      if (data.session) {
+        router.push("/dashboard");
+        return;
+      }
+
+      setMessage(
+        "Account created! Check your email to confirm your account, then come back and sign in."
+      );
       return;
     }
+
+    const signInRequest = supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    const timeout = new Promise<never>((_, reject) => {
+      setTimeout(() => {
+        reject(
+          new Error(
+            "The sign-in request timed out. Please try again."
+          )
+        );
+      }, 10000);
+    });
+
+    const { error } = await Promise.race([
+      signInRequest,
+      timeout,
+    ]);
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    router.push("/dashboard");
+  } catch (error) {
+    if (error instanceof Error) {
+      setMessage(error.message);
+    } else {
+      setMessage("Something went wrong while signing in.");
+    }
+  } finally {
+    setLoading(false);
+  }
+}
 
     if (password.length < 8) {
       setMessage("Your password must be at least 8 characters.");

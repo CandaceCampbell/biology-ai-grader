@@ -1,11 +1,8 @@
 "use client";
 
-import { useState } from "react";
-
-export default function Home() {
-  const [showLogin, setShowLogin] = useState(false);
-
-  return (
+import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "../lib/supabase";
     <main className="min-h-screen bg-slate-950 text-white">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-8">
 

@@ -102,10 +102,11 @@ export default function Dashboard() {
           <div className="mt-8 grid gap-5 md:grid-cols-3">
 
             <DashboardCard
-              icon="🏫"
-              title="Classes"
-              description="Create and manage your Biology classes."
-            />
+  icon="🏫"
+  title="Classes"
+  description="Create and manage your Biology classes."
+  onClick={() => router.push("/dashboard/classes")}
+/>
 
             <DashboardCard
               icon="📝"
@@ -142,14 +143,17 @@ function DashboardCard({
   icon,
   title,
   description,
+  onClick,
 }: {
   icon: string;
   title: string;
   description: string;
+  onClick?: () => void;
 }) {
   return (
     <button
-      type="button"
+  type="button"
+  onClick={onClick}
       className="rounded-2xl border border-slate-800 bg-slate-900 p-6 text-left transition hover:border-cyan-900 hover:bg-slate-800"
     >
       <div className="text-3xl">
